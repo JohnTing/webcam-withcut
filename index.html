@@ -85,7 +85,7 @@
         }
         updateValue();
 
-        const constraints_list = [{video: true}, 
+        const constraints_list = [ true, 
         { facingMode: { exact: 'environment' } }];
 
         let constraint_id = 0;
@@ -94,7 +94,7 @@
         function switchCamera() {
             
             constraint_id = (constraint_id+1)  % constraints_list.length;
-            navigator.mediaDevices.getUserMedia(constraints_list[constraint_id])
+            navigator.mediaDevices.getUserMedia({video: constraints_list[constraint_id]})
             .then(function (stream) {
                 video.srcObject = stream;
                 video.play();
