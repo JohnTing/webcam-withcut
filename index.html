@@ -21,22 +21,20 @@
 </style>
 
 <body>
-    <video id="video" width="0" height="0" autoplay></video>
+    <video id="video" width="1280" height="720" autoplay hidden></video>
     <canvas id="canvas" width="640" height="480"></canvas>
 
     <input type="range" id="sx" min="-1000" max="1000" value="0" onchange="updateValue()">
     <input type="range" id="sy" min="-1000" max="1000" value="0" onchange="updateValue()">
-    <input type="range" id="sw" min="1" max="2000" value="640" onchange="updateValue()">
-    <input type="range" id="sh" min="1" max="2000" value="480" onchange="updateValue()">
-    <!--
-
-
+    <input type="range" id="sw" min="-1000" max="1000" value="0" onchange="updateValue()">
+    <input type="range" id="sh" min="-1000" max="1000" value="0" onchange="updateValue()">
+    
     <br/>
-    <input type="range" id="dx"  min="0" max="1000" value="0" onchange="updateValue()">
-    <input type="range" id="dy"  min="0" max="1000" value="0" onchange="updateValue()">
-    <input type="range" id="dw"  min="0" max="1000" value="250" onchange="updateValue()"> 
-    <input type="range" id="dh"  min="0" max="1000" value="250" onchange="updateValue()">
-        -->
+    <input type="range" id="dx"  min="-1000" max="1000" value="0" onchange="updateValue()">
+    <input type="range" id="dy"  min="-1000" max="1000" value="0" onchange="updateValue()">
+    <input type="range" id="dw"  min="-1000" max="1000" value="0" onchange="updateValue()"> 
+    <input type="range" id="dh"  min="-1000" max="1000" value="0" onchange="updateValue()">
+        
     <script>
 
         if ('serviceWorker' in navigator) {
@@ -76,27 +74,20 @@
 
             sx = Number(document.getElementById('sx').value);
             sy = Number(document.getElementById('sy').value);
-            console.log(sy)
-
-
-            sw = 2001 - document.getElementById('sw').value;
-            sh = 2001 - document.getElementById('sh').value;
-            /*
-            dx = document.getElementById('dx').value;
-            dy = document.getElementById('dy').value;
-            dw = document.getElementById('dw').value;
-            dh = document.getElementById('dh').value;*/
+            sw = Number(document.getElementById('sw').value);
+            sh = Number(document.getElementById('sh').value);
+            
+            dx = Number(document.getElementById('dx').value);
+            dy = Number(document.getElementById('dy').value);
+            dw = Number(document.getElementById('dw').value);
+            dh = Number(document.getElementById('dh').value);
 
         }
         updateValue();
 
-        navigator.mediaDevices.getUserMedia({
-            video: {
-                facingMode: { exact: "environment" },
-            },
-        })
+        navigator.mediaDevices.getUserMedia({video: { facingMode: true, },})
             .then(function (stream) {
-
+                
                 video.srcObject = stream;
                 video.play();
             })
@@ -108,7 +99,11 @@
         function captureFrame() {
             // 將整個攝像頭畫面繪製到canvas上
             const ctx = canvas.getContext('2d');
-            ctx.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+            var videoTrack = video.srcObject.getVideoTracks()[0];
+
+            var settings = videoTrack.getSettings();
+            ctx.drawImage(video, sx, sy, sw + Number(settings.width), sh + Number(settings.height), 
+            dx, dy, dw + canvas.width, dh + canvas.height);
 
 
         }
