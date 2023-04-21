@@ -28,13 +28,13 @@
     <input type="range" id="sy" min="-1000" max="1000" value="0" onchange="updateValue()">
     <input type="range" id="sw" min="-1000" max="1000" value="0" onchange="updateValue()">
     <input type="range" id="sh" min="-1000" max="1000" value="0" onchange="updateValue()">
-    
-    <br/>
-    <input type="range" id="dx"  min="-1000" max="1000" value="0" onchange="updateValue()">
-    <input type="range" id="dy"  min="-1000" max="1000" value="0" onchange="updateValue()">
-    <input type="range" id="dw"  min="-1000" max="1000" value="0" onchange="updateValue()"> 
-    <input type="range" id="dh"  min="-1000" max="1000" value="0" onchange="updateValue()">
-        
+
+    <br />
+    <input type="range" id="dx" min="-1000" max="1000" value="0" onchange="updateValue()">
+    <input type="range" id="dy" min="-1000" max="1000" value="0" onchange="updateValue()">
+    <input type="range" id="dw" min="-1000" max="1000" value="0" onchange="updateValue()">
+    <input type="range" id="dh" min="-1000" max="1000" value="0" onchange="updateValue()">
+
     <script>
 
         if ('serviceWorker' in navigator) {
@@ -76,7 +76,7 @@
             sy = Number(document.getElementById('sy').value);
             sw = Number(document.getElementById('sw').value);
             sh = Number(document.getElementById('sh').value);
-            
+
             dx = Number(document.getElementById('dx').value);
             dy = Number(document.getElementById('dy').value);
             dw = Number(document.getElementById('dw').value);
@@ -85,25 +85,37 @@
         }
         updateValue();
 
-        navigator.mediaDevices.getUserMedia({video: { facingMode: true, },})
+        const constraints_list = [{video: true}, 
+        { facingMode: { exact: 'environment' } }, 
+        { facingMode: { exact: 'user' } }];
+
+        let constraint_id = 0;
+
+        switchCamera();
+        function switchCamera() {
+            
+            navigator.mediaDevices.getUserMedia(constraints_list[constraint_id])
             .then(function (stream) {
-                
                 video.srcObject = stream;
                 video.play();
             })
             .catch(function (err) {
                 console.log("An error occurred: " + err);
             });
-
+            constraint_id = (constraint_id+1)  % constraints_list.length;
+        }
 
         function captureFrame() {
+            if(!video.srcObject) {
+                return;
+            }
             // 將整個攝像頭畫面繪製到canvas上
             const ctx = canvas.getContext('2d');
             var videoTrack = video.srcObject.getVideoTracks()[0];
 
             var settings = videoTrack.getSettings();
-            ctx.drawImage(video, sx, sy, sw + Number(settings.width), sh + Number(settings.height), 
-            dx, dy, dw + canvas.width, dh + canvas.height);
+            ctx.drawImage(video, sx, sy, sw + Number(settings.width), sh + Number(settings.height),
+                dx, dy, dw + canvas.width, dh + canvas.height);
 
 
         }
@@ -125,6 +137,7 @@
 
         // 點擊 Canvas 進入全螢幕模式
         canvas.addEventListener("click", function () {
+            switchCamera();
             /*
             if (document.fullscreenElement) {
                 document.exitFullscreen();
