@@ -74,8 +74,8 @@
             const ctx = canvas.getContext('2d');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            sx = canvas.width - Number(document.getElementById('sx').value);
-            sy = -canvas.height / 2 + Number(document.getElementById('sy').value);
+            sx = Number(document.getElementById('sx').value);
+            sy = Number(document.getElementById('sy').value);
             console.log(sy)
 
 
