@@ -86,10 +86,9 @@
         updateValue();
 
         const constraints_list = [{video: true}, 
-        { facingMode: { exact: 'environment' } }, 
-        { facingMode: { exact: 'user' } }];
+        { facingMode: { exact: 'environment' } }];
 
-        let constraint_id = -1;
+        let constraint_id = 0;
 
         switchCamera();
         function switchCamera() {
@@ -103,8 +102,10 @@
             .catch(function (err) {
                 console.log("An error occurred: " + err);
             });
-            
         }
+
+
+
 
         function captureFrame() {
             if(!video.srcObject) {
