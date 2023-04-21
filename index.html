@@ -89,11 +89,12 @@
         { facingMode: { exact: 'environment' } }, 
         { facingMode: { exact: 'user' } }];
 
-        let constraint_id = 0;
+        let constraint_id = -1;
 
         switchCamera();
         function switchCamera() {
             
+            constraint_id = (constraint_id+1)  % constraints_list.length;
             navigator.mediaDevices.getUserMedia(constraints_list[constraint_id])
             .then(function (stream) {
                 video.srcObject = stream;
@@ -102,7 +103,7 @@
             .catch(function (err) {
                 console.log("An error occurred: " + err);
             });
-            constraint_id = (constraint_id+1)  % constraints_list.length;
+            
         }
 
         function captureFrame() {
